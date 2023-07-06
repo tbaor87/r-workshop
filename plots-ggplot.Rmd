@@ -7,4 +7,117 @@ output: html_document
 
 # Plots with ggplot2
 
-Wea re going to make plots in R and it's going to be amazing.
+We are going to make plots in R and it's going to be amazing.
+
+## Loading in necessary packages.
+
+```{r load-in}
+library(tidyverse)
+library(readxl)
+library(here)
+```
+
+## Loading in data via csv and seeing basic stats.
+We'll be loading in the ca_np.csv file into an object named "ca_np"
+
+```{r csv import}
+ca_np <- read_csv(here("data", "ca_np.csv"))
+```
+
+Here are some additional functions to view additional details about the dataset:
+
+To view the the variable/column names -
+```{r names}
+names(ca_np)
+```
+
+To see the first rows of the data (first 6 by default):
+```{r head}
+head(ca_np)
+```
+
+To see a quick summary of the data:
+```{r summary}
+summary(ca_np)
+```
+
+## Loading in data via xlsx.
+Use a similar function to read xlsx (Excel) files instead.
+
+```{r readxl -> read_excel}
+ci_np <- read_excel(here("data", "ci_np.xlsx"))
+```
+
+**If the file type is known, you can use "read_xlsx()" or "read_xls()" as well.
+
+## Making our first ggplot - Visitors to Channel Islands NP
+What to tell R
+1. We are using the function ggplot()
+2. What data we're using and what variables will be plot 
+3. The type of graph we are going to plot on (i.e. dot, line, column/bar)
+
+Generic form:
+ggplot(data = df_name, aes(x = x_var_name, y = y_var_name)) + geom_type()
+
+Here is a plot of visitors to Channel Islands NP over time:
+```{r plot Channel Islands visitors over years}
+ggplot(data = ci_np, aes(x = year, y = visitors)) +
+  geom_line()
+```
+
+We're going to set it as object named "geom_base" so we can modify/add-on.
+```{r plot Channel Islands visitors over years -> geom_base}
+geom_base <- ggplot(data = ci_np, aes(x = year, y = visitors))
+```
+
+We can change the plot type by using + geom_type().
+```{r change plot type to point}
+geom_base +
+  geom_point()
+```
+```{r change plot type to columns}
+geom_base +
+  geom_col()
+```
+```{r change plot type to area}
+geom_base +
+  geom_area()
+```
+
+## Customizing ggplot plots
+
+### Aesthetics
+Aesthetics can be modified by adding arguments to the geom_type() function. These include:
+- color = or colour = : update point or line colors
+
+- fill = : update fill color for objects with areas
+
+- linetype = : update the line type (dashed, long dash, etc.)
+
+- pch = : update the point style
+
+- size = : update the element size (e.g. of points or line thickness)
+
+- alpha = : update element opacity (1 = opaque, 0 = transparent)
+
+Let's make our plot a line plot with purple, dashed lines.
+```{r geom_base with purple, dashed lines}
+geom_base +
+  geom_line(
+    color = "purple",
+    linetype = "dashed"
+  )
+```
+### Mapping variables onto aesthetics
+Variables can also be mapped onto aesthetics. For example, changing the shading of a point depending on a different variable.
+These variables should be placed inside the aes() function inside of a geom_type() function:
+- geom_type(aes(size = var_name, etc.))
+
+```{r Example of mapping variables onto aesthetics}
+geom_base +
+  geom_point(
+    aes(size = visitors,
+        color = visitors),
+    alpha = 0.6
+  )
+```
